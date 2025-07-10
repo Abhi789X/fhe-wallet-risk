@@ -24,6 +24,7 @@ export default function Home() {
       if (!res.ok) throw new Error('Something went wrong');
 
       const data = await res.json();
+      console.log("Result:", data);
       setResult(data);
     } catch (err) {
       setError('Error connecting to backend. Try again.');
@@ -66,8 +67,12 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <p><span className="font-bold">Encrypted Score:</span></p>
-            <p className="break-all text-sm text-pink-300">{result.encrypted_score}</p>
+            {result.encrypted_score && (
+              <>
+                <p><span className="font-bold">Encrypted Score:</span></p>
+                <p className="break-all text-sm text-pink-300">{result.encrypted_score}</p>
+              </>
+            )}
             <p className="text-lg mt-2 font-bold text-white">{result.comment}</p>
           </motion.div>
         )}
