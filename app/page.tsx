@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function Home() {
-  const [wallet, setWallet] = useState('');
+  const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
@@ -15,13 +15,13 @@ export default function Home() {
     setResult(null);
 
     try {
-      const res = await fetch('http://161.97.103.11:7070/risk', {
+      const res = await fetch('/api/risk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet_address: wallet })
+        body: JSON.stringify({ wallet_address: address }),
       });
 
-      if (!res.ok) throw new Error('Backend error');
+      if (!res.ok) throw new Error('Something went wrong');
 
       const data = await res.json();
       setResult(data);
@@ -33,47 +33,45 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-black bg-opacity-80 backdrop-blur-xl text-white flex flex-col items-center justify-center p-4">
+    <main className="min-h-screen bg-black bg-opacity-90 text-white flex items-center justify-center p-4">
       <motion.div
+        className="bg-white bg-opacity-10 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md space-y-6"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-xl w-full bg-white/5 border border-white/10 shadow-2xl rounded-2xl p-6 backdrop-blur-sm"
+        transition={{ duration: 0.6 }}
       >
-        <h1 className="text-2xl font-bold mb-4 text-center">🔍 FHE Wallet Risk Checker</h1>
+        <h1 className="text-2xl font-bold text-center text-white">🔐 FHE Wallet Risk Checker</h1>
 
         <input
           type="text"
-          value={wallet}
-          onChange={(e) => setWallet(e.target.value)}
-          placeholder="Enter EVM wallet address"
-          className="w-full p-3 rounded-xl bg-white/10 border border-white/20 placeholder:text-white/50 text-white mb-4"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Enter EVM Wallet Address"
+          className="w-full p-3 rounded-xl bg-black bg-opacity-30 border border-white border-opacity-20 text-white placeholder:text-gray-300"
         />
 
         <button
           onClick={handleCheck}
-          disabled={loading || !wallet}
-          className="w-full py-3 rounded-xl bg-pink-500 hover:bg-pink-600 transition disabled:bg-gray-600"
+          disabled={loading}
+          className="w-full py-3 rounded-xl bg-pink-500 hover:bg-pink-600 transition font-semibold text-white"
         >
           {loading ? 'Checking...' : 'Check Risk Score'}
         </button>
 
-        {error && <p className="text-red-400 mt-4 text-center">{error}</p>}
+        {error && <p className="text-red-400 text-center">{error}</p>}
 
         {result && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            className="bg-black bg-opacity-30 p-4 rounded-xl border border-white border-opacity-20 space-y-2"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-6 bg-white/5 border border-white/10 p-4 rounded-xl text-center"
           >
-            <h2 className="text-lg font-semibold">🧠 Encrypted Score:</h2>
-            <p className="break-all text-xs text-pink-300 mt-2">{result.encrypted_score}</p>
-
-            <h2 className="mt-4 text-xl font-bold text-yellow-300">{result.comment}</h2>
+            <p><span className="font-bold">Encrypted Score:</span></p>
+            <p className="break-all text-sm text-pink-300">{result.encrypted_score}</p>
+            <p className="text-lg mt-2 font-bold text-white">{result.comment}</p>
           </motion.div>
         )}
       </motion.div>
-
-      <p className="mt-10 text-xs text-white/30">Powered by Melek • FHE x Web3</p>
-    </div>
+    </main>
   );
 }
