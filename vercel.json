@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/risk",
+      "destination": "http://161.97.103.11:7070/risk"
+    }
+  ]
+}
