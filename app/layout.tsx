@@ -1,4 +1,4 @@
-import './globals.css';
+import '../styles/globals.css'; // ✅ FIXED PATH
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
